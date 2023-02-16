@@ -1,0 +1,125 @@
+class Node:
+    def __init__(self, value, link=None):
+        self.value = value
+        self.link = link
+
+    def __repr__(self):
+        return str(self.value)
+
+    def set_link(self, new_link):
+        if isinstance(new_link, Node):
+            self.link = new_link
+        else:
+            raise ValueError("new_link must be a valid Node object")
+
+    def set_value(self, new_value):
+        self.value = new_value
+
+
+class LinkedList:
+  def __init__(self, head_node):
+    self.head_node = head_node
+  def set_head_node(self, new_head_node):
+    new_head_node.set_link(self.head_node)
+    self.head_node = new_head_node
+  def remove_index(self, index):
+    current_node = self.head_node
+    if index == 0:
+      self.head_node = current_node.link
+    else:
+      for i in range(index-1):
+        current_node = current_node.link
+      current_node.set_link(current_node.link.link)
+  def remove_value(self, value):
+    if value == self.head_node.value:
+      self.head_node = self.head_node.link
+    else:
+      current_node = self.head_node
+      next_node = current_node.link
+      while next_node.value != value:
+        current_node = next_node
+        next_node = next_node.link
+      current_node.set_link(next_node.link)
+  def remove_node(self, node):
+    if self.head_node == node:
+      self.head_node = node.link
+    else:
+      current_node = self.head_node
+      next_node = current_node.link
+      while next_node != node:
+        current_node = next_node
+        next_node = next_node.link
+      current_node.set_link(next_node.link)
+  def update_head_node(self, new_head_node):
+    new_head_node.set_link(self.head_node)
+    self.head_node = new_head_node
+  def __repr__(self):
+    current_node = self.head_node
+    string = ""
+    while current_node is not None:
+        string += str(current_node.value) + "\n"
+        current_node = current_node.link
+    return string
+
+  def advance(self, initial_node, n):
+    l = initial_node
+    c = 0
+    while c<n:
+      l = l.link
+      c += 1
+    return l
+  def index(self, n):
+    i = 0
+    current_node = self.head_node
+    while i<n:
+      current_node = current_node.link
+      i+=1
+    return current_node
+  def insert_node_after(self, new_node, node):
+    new_node.link = node.link
+    node.link = new_node
+  def previous_node(self, node):
+    current_node = self.head_node
+    prev = None
+    while current_node != node:
+        prev = current_node
+        current_node = current_node.link
+    if current_node is None:
+      return None
+    return prev
+  def insert_node_before(self, new_node, node):
+    if node == self.head_node:
+      self.set_head_node(new_node)
+    else:
+      prev_node = self.previous_node(node)
+      if prev_node is None:
+        print("Error: Node not found in linked list")
+      else:
+        self.insert_node_after(new_node, prev_node)
+
+  def swap_nodes(self, n1, n2):
+    prev_n1 = self.previous_node(n1)
+    prev_n2 = self.previous_node(n2)
+
+    if prev_n1 is None or prev_n2 is None:
+        print("One of the nodes is not in the linked list")
+        return
+
+    self.insert_node_before(n2, n1)
+    self.remove_node(n1)
+    self.insert_node_before(n1, n2)
+    self.remove_node(n2)
+
+
+n1 = Node(1)
+n2 = Node(2)
+n3 = Node(4)
+n4 = Node(8)
+n5 = Node(16)
+n1.set_link(n2)
+n2.set_link(n3)
+n3.set_link(n4)
+n4.set_link(n5)
+ll = LinkedList(n1)
+ll.swap_nodes(n2, n3)
+print(ll)
